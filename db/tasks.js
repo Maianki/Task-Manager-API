@@ -29,6 +29,6 @@ const tasks = [
         description: 'Submit the projects done so far.',
         isCompleted: false,
     },
-]
+];
 
-module.exports = tasks
+module.exports = tasks;
