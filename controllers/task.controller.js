@@ -86,8 +86,8 @@ const updateTaskById = (req, res) => {
         });
     } else {
         return res
-            .status(validator.validateTaskInfo(task, taskData).statusCode)
-            .json(validator.validateTaskInfo(task, taskData));
+            .status(validator.validateTaskUpdate(task, taskData).statusCode)
+            .json(validator.validateTaskUpdate(task, taskData));
     }
 };
 
