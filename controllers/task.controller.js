@@ -1,3 +1,4 @@
+const validator = require('../utils/task.validation');
 let taskData = require('../db/tasks');
 
 const fetchAllTasks = (req, res) => {
@@ -27,23 +28,6 @@ const fetchTaskById = (req, res) => {
     }
 };
 
-const createNewTask = (req, res) => {
-    const task = req.body;
-    taskData.push(task);
-    // eslint-disable-next-line no-constant-condition
-    if (2 === 2) {
-        return res.status(201).json({
-            message: 'Task created successfully!',
-            statusCode: 201,
-        });
-    } else {
-        return res.status(400).json({
-            message: 'Bad request!',
-            statusCode: 400,
-        });
-    }
-};
-
 const deleteIsTask = (req, res) => {
     let allTasks = taskData;
     let { id } = req.params;
@@ -59,6 +43,22 @@ const deleteIsTask = (req, res) => {
             message: 'Task doesn"t exist!',
             statusCode: 404,
         });
+    }
+};
+
+const createNewTask = (req, res) => {
+    const task = req.body;
+
+    if (validator.validateTaskInfo(task, taskData).statusCode === 201) {
+        taskData.push(task);
+        return res.status(201).json({
+            statusCode: 201,
+            message: 'Task created successfully!',
+        });
+    } else {
+        return res
+            .status(validator.validateTaskInfo(task, taskData).statusCode)
+            .json(validator.validateTaskInfo(task, taskData));
     }
 };
 
