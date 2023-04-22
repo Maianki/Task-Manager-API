@@ -65,26 +65,29 @@ const createNewTask = (req, res) => {
 const updateTaskById = (req, res) => {
     let allTasks = taskData;
     const { id } = req.params;
-    const updatedTask = JSON.parse(JSON.stringify(req.body));
+    const updatedTask = req.body;
 
     let task = allTasks.find((val) => val.id == id);
 
-    if (task) {
-        // eslint-disable-next-line no-constant-condition
-        if (true) {
-            task = { ...task, ...updatedTask };
-            taskData = allTasks.map((val) => (val.id == id ? task : val));
-            return res.status(200).json({
-                message: 'Task updated successfully!',
-                data: task,
-                statusCode: 200,
-            });
-        }
-    } else {
+    if (!task) {
         return res.status(404).json({
             message: 'Task doesn"t exist!',
             statusCode: 404,
         });
+    }
+    task = { ...task, ...updatedTask };
+
+    if (validator.validateTaskUpdate(task, taskData).statusCode === 201) {
+        taskData = allTasks.map((val) => (val.id == id ? task : val));
+        return res.status(200).json({
+            message: 'Task updated successfully!',
+            data: task,
+            statusCode: 200,
+        });
+    } else {
+        return res
+            .status(validator.validateTaskInfo(task, taskData).statusCode)
+            .json(validator.validateTaskInfo(task, taskData));
     }
 };
 
